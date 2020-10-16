@@ -24,7 +24,6 @@ public class Guesser{
   
   // Write the constructor below this line.
 
-
   /*
    * Task 2. Complete the start() method, so that
    * in the method body, you call first the
