@@ -1,0 +1,131 @@
+Emma Fredriksson.
+Siktar på VG.
+
+1. När använder man add respektive commit?
+
+Svar:
+Add använder man för att lägga till en eller flera färdiga ändringar i en så kallad 
+staging area. Staging area visar git vad som ska vara med i nästa commit.
+Man samlar helt enkelt ändringarna där redo att bli committade med kommandot commit. 
+
+Commit använder man således för att skapa en ny revision av allt det som
+ligger i staging arean och rensar den. 
+
+
+2. Vad är pull repektive push?
+
+Svar:
+Push använder man för att ladda upp de ändringar som man har committat. Från sitt
+lokala repository till ett remote repository, t.ex. GitHub.
+
+Pull används för att hämta och ladda ner ändringar/committar från ett remote repository
+och uppdaterar det lokala repositorit så att de matchar varandra.
+
+
+3. När använder man log respektive status?
+
+Svar: 
+Log visar historik över alla commits som har gjorts.
+
+Status används för att se statusen på sin working directory och sin
+staging area. Röd text visar att ändringar har skett på tidigare commits,
+och har ännu inte blivit adderade till staging arean.
+Visar även röda "untracked". Detta är t.ex. nya filer som har skapats men
+som inte tidigare har committats.
+Använder man git add på dessa ändringar blir de istället gröna och är
+således redo att bli committade. 
+
+
+
+4. Hur kan man formulera sig i sina commit-meddelanden?
+
+Svar:
+Ett git commit meddelande ska vara kort men informativt om vilken ändring som
+har skett. Det ska stå i imperativ. Det vill säga add och inte added, change
+istället för changed osv.
+
+
+
+5. Det finns flera sätt att rulla tillbaka koden till ett tidigare tillstånd. 
+Förklara skillnaden och motivera när man skulle använda den ena eller andra 
+metoden. Ge gärna exempel på de kommandon du använder för att göra detta och 
+vissa att det fungerar, vilken output du fick från git-kommandona
+
+Svar:
+Om man vill se hur en tidigare commit såg ut kan man använda git checkout <commit
+hash>. Detta gör att working repository matchar den exakta commiten. 
+Den utskrift man får ser ungefär ut så här:
+	$ git checkout f72c541
+	Note: switching to 'f72c541'.
+	
+	You are in 'detached HEAD' state. You can look around, make experimental
+	changes and commit them, and you can discard any commits you make in this
+	state without impacting any branches by switching back to a branch.
+	
+	If you want to create a new branch to retain commits you create, you may
+	do so (now or later) by using -c with the switch command. Example:
+	
+  	git switch -c <new-branch-name>
+	
+	Or undo this operation with:
+	
+  	git switch -
+	
+	Turn off this advice by setting config variable advice.detachedHead to false
+	
+	HEAD is now at f72c541 add gitignore
+
+Såsom det står så kan man titta och göra eventuella ändringar, sedan välja om man vill
+committa dem eller inte. Det påverkar inte branchen som man tog committen från. Härifrån
+kan man så som det står också välja att göra en egen branch för att behålla och fortsätta
+ändra. 
+
+Om man istället vill ställa tillbaka/rollback till en tidigare commit så kan man 
+använda git reset <commit hash>.
+
+Så här kan det se ut innan man har kört kommandot:
+	emfr8@LAPTOP-QH7SRHFT MINGW64 ~/Mina dokument/Test (master)
+	$ git log --oneline
+	87e1db9 (HEAD -> master) File have 3 lines now
+	0527e11 File now have 2 lines
+	37c966a File with 1 line
+
+Sedan vill jag tillbaka till "File with 1 line" så jag kan köra git reset 37c966a
+Får då denna utskrift:
+	emfr8@LAPTOP-QH7SRHFT MINGW64 ~/Mina dokument/Test (master)
+	$ git log --oneline
+	37c966a (HEAD -> master) File with 1 line
+
+Det vill säga, den tog bort de två andra committarna ur logen.
+Finns även git reset --hard, detta resettar working repositoryn och ger dig 
+innehållet av den committen som du valt. Så öppnar jag filen efter en reset --hard 
+så innehåller den bara en rad istället för 3.
+
+
+Men ibland vill man kanske ändå visa att man vill göra en rollback till tidigare version
+och ändå behålla historiken i git log. Då kan man använda t.ex. git revert HEAD.
+Innan:
+	emfr8@LAPTOP-QH7SRHFT MINGW64 ~/Mina dokument/Test (master)
+	$ git log --oneline
+	b3479cb (HEAD -> master) File with 2 lines
+	58af1e1 File with 1 line
+
+Efter kommandot git revert HEAD:
+	emfr8@LAPTOP-QH7SRHFT MINGW64 ~/Mina dokument/Test (master)
+	$ git log --oneline
+	e40c135 (HEAD -> master) Revert "File with 2 lines" back to file with 1 line.
+	b3479cb File with 2 lines
+	58af1e1 File with 1 line
+
+Öppnar jag filen nu har den enbart 1 rad.
+
+En av skillnaderna är att reset tar bort historiken från git log och återställer till 
+det committen man valt i sitt kommando. Medans revert tar tillbaka tidigare commit och committar 
+en ny commit med denna ändringen och samtidigt behåller historiken (Revert-committen har en egen
+hash e40c135 i detta fallet).
+
+Vilken man ska använda, reset eller revert beror på. Har man pushat upp kod till ett
+remote repository som andra eventuellt har använt pull från så är det bäst att använda revert.
+För att arbetsflödet i Git fungerar bra på att plocka upp nya committar men det kan
+vara svårt om en kedja av commits inte längre syns om någon resettar tillbaka till en tidigare 
+commit med kommandot reset. 
