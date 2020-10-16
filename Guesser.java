@@ -28,7 +28,7 @@ public class Guesser{
     this.low = low;
     this.high = high;
   }
-  
+
   /*
    * Task 2. Complete the start() method, so that
    * in the method body, you call first the
@@ -36,7 +36,9 @@ public class Guesser{
    */
   public void start(){
     // call the rules method here
+    rules();
     // call the doGuesses() method here
+    doGuesses();
   }
 
   private void rules(){
